@@ -33,7 +33,7 @@ var calculadora={
             case 'por':
                 this.procesarPor()
                 break
-            case 'suma':
+            case 'mas':
                 this.procesarSuma()
                 break
             case 'dividido':
@@ -58,7 +58,11 @@ var calculadora={
         this.pantalla = '0'
     },
     procesarSigno: function() {
-
+        if(this.pantalla !=0)
+            if (this.pantalla.includes('-'))
+                this.pantalla = this.pantalla.replace('-','')
+            else
+                this.pantalla = '-' + this.pantalla
     },
     procesarRaiz: function() {
 
