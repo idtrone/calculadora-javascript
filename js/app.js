@@ -1,5 +1,5 @@
 var calculadora={
-    pantalla: "",
+    pantalla: "0",
     inicializar: function () {
         // metodo de escucha de los botones
         var tecla = document.getElementsByClassName('tecla')
@@ -10,12 +10,12 @@ var calculadora={
             tecla[i].onmouseup = function (e) {
                 e.currentTarget.style = 'padding: 0'
             }
-            tecla[i].onmouseup = function (e) {
-                this.procesarTecla(e.currentTarget.id)
+            tecla[i].onclick = function (e) {
+                calculadora.procesarTecla(e.currentTarget.id)
             }
         }
     },
-    procesarTecla(id) {
+    procesarTecla: function(id) {
         // procesar la tecla segun el valor que tenga
         switch (id) {
             case 'on':
@@ -45,43 +45,55 @@ var calculadora={
             case 'igual':
                 this.procesarIgual()
                 break
+            case '0':
+                this.procesarCero()
+                break
             default:
                 this.procesarNumero(id)
                 break
         }
-        document.getElementById('display').value = pantalla
+        document.getElementById('display').innerHTML = this.pantalla
     },
-    procesarOn() {
+    procesarOn: function() {
+        this.pantalla = '0'
+    },
+    procesarSigno: function() {
 
     },
-    procesarSigno() {
+    procesarRaiz: function() {
 
     },
-    procesarRaiz() {
+    procesarMenos: function() {
 
     },
-    procesarMenos() {
+    procesarPor: function() {
 
     },
-    procesarPor() {
+    procesarSuma: function() {
 
     },
-    procesarSuma() {
+    procesarDividido: function() {
 
     },
-    procesarDividido() {
+    procesarPunto: function() {
 
     },
-    procesarPunto() {
+    procesarIgual: function() {
 
     },
-    procesarIgual() {
-
-    },
-    procesarNumero(id) {
-        if (this.pantalla == 0){
+    procesarNumero: function(id) {
+        if (this.pantalla == 0)
             this.pantalla = id;
+        else{
+            // restriccion de 8 digitos
+            if (this.pantalla.length < 8)
+                this.pantalla = this.pantalla + id;
         }
+    },
+    procesarCero: function() {
+        if (this.pantalla !="0")
+            if (this.pantalla.length < 8)
+                this.pantalla = this.pantalla + "0"
     }
 }
 
