@@ -1,6 +1,6 @@
 var calculadora={
     pantalla: "0",
-    numeroAnterior: "0",
+    numeroAnterior: "",
     signoAnterior: "",
     resultado: 0,
     inicializar: function () {
@@ -59,6 +59,8 @@ var calculadora={
     },
     procesarOn: function() {
         this.pantalla = '0'
+        this.signoAnterior = ""
+        this.numeroAnterior = ""
     },
     procesarSigno: function() {
         if(this.pantalla !=0)
@@ -94,7 +96,10 @@ var calculadora={
                 this.pantalla = this.pantalla + '.'
     },
     procesarIgual: function() {
-
+        this.procesarSignoAnterior()
+        this.pantalla = this.resultado
+        this.numeroAnterior = this.resultado
+        this.signoAnterior = ""
     },
     procesarNumero: function(numero) {
         if (this.pantalla == '0')
@@ -121,23 +126,20 @@ var calculadora={
     procesarSignoAnterior() {
         /*===procesa una operacion anterior si existe===*/
         if (this.signoAnterior==""){
-            // asignar la nueva operacion
-            this.numeroAnterior = this.pantalla
+            if (this.numeroAnterior=="")
+                // asignar la nueva operacion
+                this.numeroAnterior = this.pantalla
         }
         else{
             // procesar la anterior operacion y luego asignar la nueva operacion
             switch (this.signoAnterior) {
-                case "mas": this.resultado = parseFloat(this.signoAnterior) + parseFloat(this.pantalla)
-                    this.signoAnterior = signoActual
+                case "mas": this.numeroAnterior = parseFloat(this.numeroAnterior) + parseFloat(this.pantalla)
                     break
-                case "menos": this.resultado = parseFloat(this.signoAnterior) - parseFloat(this.pantalla)
-                    this.signoAnterior = signoActual
+                case "menos": this.numeroAnterior = parseFloat(this.numeroAnterior) - parseFloat(this.pantalla)
                     break
-                case "por": this.resultado = parseFloat(this.signoAnterior) * parseFloat(this.pantalla)
-                    this.signoAnterior = signoActual
+                case "por": this.numeroAnterior = parseFloat(this.numeroAnterior) * parseFloat(this.pantalla)
                     break
-                case "dividido": this.resultado = parseFloat(this.signoAnterior) / parseFloat(this.pantalla)
-                    this.signoAnterior = signoActual
+                case "dividido": this.numeroAnterior = parseFloat(this.numeroAnterior) / parseFloat(this.pantalla)
                     break
             }
         }
