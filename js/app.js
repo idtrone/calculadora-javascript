@@ -1,5 +1,8 @@
 var calculadora={
     pantalla: "0",
+    numeroAnterior: "0",
+    signoAnterior: "",
+    resultado: 0,
     inicializar: function () {
         // metodo de escucha de los botones
         var tecla = document.getElementsByClassName('tecla')
@@ -52,7 +55,7 @@ var calculadora={
                 this.procesarNumero(id)
                 break
         }
-        document.getElementById('display').innerHTML = this.pantalla
+        document.getElementById('display').innerHTML = this.restricionDigitos(this.pantalla)
     },
     procesarOn: function() {
         this.pantalla = '0'
@@ -68,16 +71,20 @@ var calculadora={
 
     },
     procesarMenos: function() {
-
+        this.procesarSignoAnterior()
+        this.signoAnterior = "-"
     },
     procesarPor: function() {
-
+        this.procesarSignoAnterior()
+        this.signoAnterior = "*"
     },
     procesarSuma: function() {
-
+        this.procesarSignoAnterior()
+        this.signoAnterior = "+"
     },
     procesarDividido: function() {
-
+        this.procesarSignoAnterior()
+        this.signoAnterior = "/"
     },
     procesarPunto: function() {
         if(!this.pantalla.includes('.'))
@@ -94,18 +101,49 @@ var calculadora={
             this.pantalla = numero;
         else{
             // restriccion de 8 digitos
-            this.procesarDigitos(numero)
+            this.procesarIngresoDigitos(numero)
         }
     },
     procesarCero: function() {
         if (this.pantalla !='0')
-            this.procesarDigitos('0')
+            this.procesarIngresoDigitos('0')
     },
-    procesarDigitos(numero){
+    procesarIngresoDigitos(numero){
+        // limita a 8 el numero de digitos desde los botones de la calculadora
         if (this.pantalla.length < 8)
             this.pantalla = this.pantalla + numero
+    },
+    restricionDigitos(numero){
+        // limita siempre a 8 digitos si contenido de la pantalla tiene mas de 8 digitos
+        if (this.pantalla.length > 8)
+            this.pantalla = this.pantalla.substr(0, 8)
+    },
+    procesarSignoAnterior() {
+        /*===procesa una operacion anterior si existe===*/
+        if (this.signoAnterior==""){
+            // asignar la nueva operacion
+            this.numeroAnterior = this.pantalla
+        }
+        else{
+            // procesar la anterior operacion y luego asignar la nueva operacion
+            switch (this.signoAnterior) {
+                case "mas": this.resultado = parseFloat(this.signoAnterior) + parseFloat(this.pantalla)
+                    this.signoAnterior = signoActual
+                    break
+                case "menos": this.resultado = parseFloat(this.signoAnterior) - parseFloat(this.pantalla)
+                    this.signoAnterior = signoActual
+                    break
+                case "por": this.resultado = parseFloat(this.signoAnterior) * parseFloat(this.pantalla)
+                    this.signoAnterior = signoActual
+                    break
+                case "dividido": this.resultado = parseFloat(this.signoAnterior) / parseFloat(this.pantalla)
+                    this.signoAnterior = signoActual
+                    break
+            }
+        }
+        // limpiar pantalla
+        this.pantalla = ""
     }
-
 }
 
 
