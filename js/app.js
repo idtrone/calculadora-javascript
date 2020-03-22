@@ -89,20 +89,23 @@ var calculadora={
     procesarIgual: function() {
 
     },
-    procesarNumero: function(id) {
+    procesarNumero: function(numero) {
         if (this.pantalla == '0')
-            this.pantalla = id;
+            this.pantalla = numero;
         else{
             // restriccion de 8 digitos
-            if (this.pantalla.length < 8)
-                this.pantalla = this.pantalla + id;
+            this.procesarDigitos(numero)
         }
     },
     procesarCero: function() {
         if (this.pantalla !='0')
-            if (this.pantalla.length < 8)
-                this.pantalla = this.pantalla + "0"
+            this.procesarDigitos('0')
+    },
+    procesarDigitos(numero){
+        if (this.pantalla.length < 8)
+            this.pantalla = this.pantalla + numero
     }
+
 }
 
 
