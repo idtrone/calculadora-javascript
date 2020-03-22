@@ -1,7 +1,7 @@
 var calculadora={
     //inicializar variables
-    pantalla : "0",
-    resultadoAnterior : "",
+    resultado : "",
+    
     signoAnterior : "",
     ultimoNumero : "",
     ultimoSigno : "",
@@ -24,94 +24,112 @@ var calculadora={
     },
 
     procesarTecla: function(id) {
+        var pantalla = "" 
         // procesar la tecla segun esu valor
         switch (id) {
             case 'on':
-                this.procesarOn()
+                pantalla = this.procesarOn()
                 break
             case 'sign':
-                this.procesarSigno()
+                pantalla = this.procesarSigno()
                 break
             case 'raiz':
-                this.procesarRaiz()
+                pantalla = this.procesarRaiz()
                 break
             case 'menos':
-                this.procesarMenos()
+                pantalla = this.procesarMenos()
                 break
             case 'por':
-                this.procesarPor()
+                pantalla = this.procesarPor()
                 break
             case 'mas':
-                this.procesarSuma()
+                pantalla = this.procesarSuma()
                 break
             case 'dividido':
-                this.procesarDividido()
+                pantalla = this.procesarDividido()
                 break
             case 'punto':
-                this.procesarPunto()
+                pantalla = this.procesarPunto()
                 break
             case 'igual':
-                this.procesarIgual()
+                pantalla = this.procesarIgual()
                 break
             case '0':
-                this.procesarCero()
+                pantalla = this.procesarCero()
                 break
             default:
-                this.procesarNumero(id)
+                pantalla = this.procesarNumero(id)
                 break
         }
-        this.restricionDigitos()
-        document.getElementById('display').innerHTML = this.pantalla
+        pantalla = this.restricionDigitos(pantalla)
+        document.getElementById('display').innerHTML = pantalla
     },
 
-    procesarOn: function() {
-        this.pantalla = '0'
-        this.signoAnterior = ""
-        this.resultadoAnterior = ""
-        this.nuevaOperacion = true
+    procesarOn: function() {        
+        // this.signoAnterior = ""
+        // this.resultadoAnterior = ""
+        // this.nuevaOperacion = true
+        return '0'
     },
 
-    procesarSigno: function() {
-        if(this.pantalla !=0)
-            if (String(this.pantalla).includes('-'))
-                this.pantalla = this.pantalla.replace('-','')
+    procesarSigno: function(a) {
+        if (a == "")
+            a = '0'
+        else
+            // devuelve un signo positivo o negativo de la pantalla
+            if(a !='0')
+                if (String(a).includes('-'))
+                    a = a.replace('-','')
+                else
+                    a = '-' + a
+        return a
+    },
+
+    operacionBinaria(a, b, operacion){
+        var resultado = '0'
+        switch (operacion) {
+            case "+": resultado = this.suma(a, b)
+                break
+            case "-": resultado = this.resta(a, b)
+                break
+            case "*": resultado = this.multiplicacion(a, b)
+                break
+            case "/": resultado = this.division(a, b)
+                break
+        }
+        return resultado
+    },
+
+    raiz: function(a) {
+        return String(Math.sqrt(parseFloat(a)))
+    },
+
+    resta: function(a, b) {
+        return String(parseFloat(a) - parseFloat(b))
+    },
+
+    multiplicacion: function(a, b) {
+        return String(parseFloat(a) * parseFloat(b))
+    },
+
+    suma: function(a, b) {
+        return String(parseFloat(a) / parseFloat(b))
+    },
+
+    division: function(a, b) {
+        return String(parseFloat(a) / parseFloat(b))
+    },
+
+    procesarPunto: function(a) {
+        if(!a.includes('.'))
+            if(a == '0')
+                a = '0.'
             else
-                this.pantalla = '-' + this.pantalla
+                a = a + '.'
+        return a
     },
 
-    procesarRaiz: function() {
-
-    },
-
-    procesarMenos: function() {
-        this.procesarSignoAnterior()
-        this.signoAnterior = "-"
-    },
-
-    procesarPor: function() {
-        this.procesarSignoAnterior()
-        this.signoAnterior = "*"
-    },
-
-    procesarSuma: function() {
-        this.procesarSignoAnterior()
-        this.signoAnterior = "+"
-    },
-
-    procesarDividido: function() {
-        this.procesarSignoAnterior()
-        this.signoAnterior = "/"
-    },
-
-    procesarPunto: function() {
-        if(!this.pantalla.includes('.'))
-            if(this.pantalla == '0')
-                this.pantalla = '0.'
-            else
-                this.pantalla = this.pantalla + '.'
-    },
-
-    procesarSignoAnterior() {
+    procesarOperacionAnterior() {
         /*===procesa una operacion anterior no existe===*/
         if (this.signoAnterior==""){
             if (this.resultadoAnterior=="")
@@ -120,16 +138,7 @@ var calculadora={
         }
         else{
             // procesar la anterior operacion y luego asignar la nueva operacion
-            switch (this.signoAnterior) {
-                case "+": this.resultadoAnterior = String(parseFloat(this.resultadoAnterior) + parseFloat(this.pantalla))
-                    break
-                case "-": this.resultadoAnterior = String(parseFloat(this.resultadoAnterior) - parseFloat(this.pantalla))
-                    break
-                case "*": this.resultadoAnterior = String(parseFloat(this.resultadoAnterior) * parseFloat(this.pantalla))
-                    break
-                case "/": this.resultadoAnterior = String(parseFloat(this.resultadoAnterior) / parseFloat(this.pantalla))
-                    break
-            }
+
         }
         this.ultimoNumero = this.pantalla
         // limpiar pantalla
@@ -141,7 +150,7 @@ var calculadora={
 
     procesarIgual: function() {
         if (!this.dobleIgual){
-            this.procesarSignoAnterior()
+            this.procesarOperacionAnterior()
             this.ultimoSigno = this.signoAnterior
             this.signoAnterior = ""
         }
@@ -150,7 +159,7 @@ var calculadora={
                 if (this.ultimoSigno != ""){
                     this.signoAnterior = this.ultimoSigno
                     this.pantalla = this.ultimoNumero
-                    this.procesarSignoAnterior()
+                    this.procesarOperacionAnterior()
                 }
             }
         }
