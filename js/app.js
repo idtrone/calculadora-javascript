@@ -16,7 +16,7 @@ var calculadora={
         }
     },
     procesarTecla: function(id) {
-        // procesar la tecla segun el valor que tenga
+        // procesar la tecla segun esu valor
         switch (id) {
             case 'on':
                 this.procesarOn()
@@ -76,13 +76,17 @@ var calculadora={
 
     },
     procesarPunto: function() {
-
+        if(!this.pantalla.includes('.'))
+            if(this.pantalla == '0')
+                this.pantalla = '0.'
+            else
+                this.pantalla = this.pantalla + '.'
     },
     procesarIgual: function() {
 
     },
     procesarNumero: function(id) {
-        if (this.pantalla == 0)
+        if (this.pantalla == '0')
             this.pantalla = id;
         else{
             // restriccion de 8 digitos
@@ -91,7 +95,7 @@ var calculadora={
         }
     },
     procesarCero: function() {
-        if (this.pantalla !="0")
+        if (this.pantalla !='0')
             if (this.pantalla.length < 8)
                 this.pantalla = this.pantalla + "0"
     }
