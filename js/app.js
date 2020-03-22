@@ -2,7 +2,6 @@ var calculadora={
     pantalla: "0",
     numeroAnterior: "",
     signoAnterior: "",
-    resultado: 0,
     inicializar: function () {
         // metodo de escucha de los botones
         var tecla = document.getElementsByClassName('tecla')
@@ -55,7 +54,8 @@ var calculadora={
                 this.procesarNumero(id)
                 break
         }
-        document.getElementById('display').innerHTML = this.restricionDigitos(this.pantalla)
+        this.restricionDigitos()
+        document.getElementById('display').innerHTML = this.pantalla
     },
     procesarOn: function() {
         this.pantalla = '0'
@@ -64,7 +64,7 @@ var calculadora={
     },
     procesarSigno: function() {
         if(this.pantalla !=0)
-            if (this.pantalla.includes('-'))
+            if (String(this.pantalla).includes('-'))
                 this.pantalla = this.pantalla.replace('-','')
             else
                 this.pantalla = '-' + this.pantalla
@@ -97,8 +97,7 @@ var calculadora={
     },
     procesarIgual: function() {
         this.procesarSignoAnterior()
-        this.pantalla = this.resultado
-        this.numeroAnterior = this.resultado
+        this.pantalla = this.numeroAnterior
         this.signoAnterior = ""
     },
     procesarNumero: function(numero) {
@@ -118,10 +117,13 @@ var calculadora={
         if (this.pantalla.length < 8)
             this.pantalla = this.pantalla + numero
     },
-    restricionDigitos(numero){
+    restricionDigitos(){
         // limita siempre a 8 digitos si contenido de la pantalla tiene mas de 8 digitos
-        if (this.pantalla.length > 8)
-            this.pantalla = this.pantalla.substr(0, 8)
+        var punto = this.pantalla.includes('.')?1:0
+        var signo = this.pantalla.includes('-')?1:0
+        if (this.pantalla.length - (punto + signo) > 8)
+            this.pantalla = this.pantalla.substr(0, 8+ punto + signo)
+
     },
     procesarSignoAnterior() {
         /*===procesa una operacion anterior si existe===*/
@@ -133,13 +135,13 @@ var calculadora={
         else{
             // procesar la anterior operacion y luego asignar la nueva operacion
             switch (this.signoAnterior) {
-                case "mas": this.numeroAnterior = parseFloat(this.numeroAnterior) + parseFloat(this.pantalla)
+                case "+": this.numeroAnterior = String(parseFloat(this.numeroAnterior) + parseFloat(this.pantalla))
                     break
-                case "menos": this.numeroAnterior = parseFloat(this.numeroAnterior) - parseFloat(this.pantalla)
+                case "-": this.numeroAnterior = String(parseFloat(this.numeroAnterior) - parseFloat(this.pantalla))
                     break
-                case "por": this.numeroAnterior = parseFloat(this.numeroAnterior) * parseFloat(this.pantalla)
+                case "*": this.numeroAnterior = String(parseFloat(this.numeroAnterior) * parseFloat(this.pantalla))
                     break
-                case "dividido": this.numeroAnterior = parseFloat(this.numeroAnterior) / parseFloat(this.pantalla)
+                case "/": this.numeroAnterior = String(parseFloat(this.numeroAnterior) / parseFloat(this.pantalla))
                     break
             }
         }
