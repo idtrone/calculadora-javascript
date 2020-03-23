@@ -7,7 +7,6 @@ var calculadora={
 
     igualFlag : false,
     signoFlag: false,
-    inicioFlag: true,
 
     // signoAnterior : "",
 
@@ -221,7 +220,7 @@ var calculadora={
 
         this.igualFlag = false
         this.signoFlag = false
-        this.inicioFlag = true
+
         return '0'
     },
 
