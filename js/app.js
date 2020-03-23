@@ -47,7 +47,7 @@ var calculadora={
                 pantalla = this.procesarIgual()
                 break
             case 'raiz':
-
+                pantalla = this.raiz(this.capturarNumeroPantalla())
                 break
             case 'menos':
                 pantalla = this.asignarOperacion('-')
@@ -62,10 +62,10 @@ var calculadora={
                 pantalla = this.asignarOperacion('/')
                 break
             case '0':
-                pantalla = this.agregarDigito(document.getElementById('display').innerHTML, '0')
+                pantalla = this.agregarCero(this.capturarNumeroPantalla())
                 break
             default:
-                pantalla = this.agregarDigito(document.getElementById('display').innerHTML, id)
+                pantalla = this.agregarDigito(this.capturarNumeroPantalla(), id)
                 break
         }
         pantalla = this.restrigirDigitos(pantalla, 8)
@@ -88,7 +88,7 @@ var calculadora={
     },
 
     raiz: function(a) {
-        return String(Math.sqrt(parseFloat(a)))
+        return a
     },
 
     resta: function(a, b) {
@@ -108,17 +108,23 @@ var calculadora={
     },
 
     agregarPunto: function() {
-        var a = document.getElementById('display').innerHTML
-        if(!a.includes('.'))
-            if(a == '0' || a=="")
-                a = '0.'
-            else
-                a = a + '.'
+        var a = this.capturarNumeroPantalla()
+        if(this.igualFlag){
+            a = '0.'
+        }
+        else{
+            if(!a.includes('.'))
+                if(a == '0' || a=="")
+                    a = '0.'
+                else
+                    a = a + '.'
+        }
+        this.igualFlag = false
         return a
     },
 
     agregarSigno: function() {
-        var a = document.getElementById('display').innerHTML
+        var a = this.capturarNumeroPantalla()
         // devuelve un signo positivo o negativo de la pantalla
         if(a !='0' || a != '')
             if (String(a).includes('-'))
@@ -129,20 +135,24 @@ var calculadora={
     },
 
     agregarDigito: function(numero, digito) {
-        if(this.igualFlag){
+        if(this.igualFlag)
             numero = digito
+        else
+            if (numero == '0')
+                numero = digito
+            else
+                numero = numero + digito
+        this.igualFlag = false
+        return numero
+    },
+
+    agregarCero: function(numero) {
+        if(this.igualFlag){
+            numero = '0'
         }
         else {
-            if (this.inicioFlag && digito != 0){
-                this.inicioFlag = false;
-                numero = digito
-            }
-            else{
-                if (numero != '0'){
-                    // var punto = numero.includes('.')?1:0,
-                    //     signo = numero.includes('-')?1:0
-                    numero = numero + digito
-                }
+            if (numero != '0'){
+                numero = numero + '0'
             }
         }
         this.igualFlag = false
@@ -158,11 +168,11 @@ var calculadora={
     },
 
     procesarIgual: function() {
-        var resultado = document.getElementById('display').innerHTML
+        var resultado = this.capturarNumeroPantalla()
         if (!this.igualFlag){
-            //devuelve el operando 
+            //devuelve el operando
             if (this.primerNumero != "" && this.ultimoSigno != ""){
-                this.ultimoNumero = document.getElementById('display').innerHTML
+                this.ultimoNumero = this.capturarNumeroPantalla()
                 resultado = this.operacionBinaria(this.primerNumero,
                     this.ultimoNumero,
                     this.ultimoSigno)
@@ -183,13 +193,13 @@ var calculadora={
     asignarOperacion: function (operacion) {
         if (!this.signoFlag){// si no hay operacion
             //capturar el numero de la pantalla
-            this.primerNumero = document.getElementById('display').innerHTML
+            this.primerNumero = this.capturarNumeroPantalla()
             //asignar la operacion
             this.ultimoSigno = operacion
         }
         else{ // si hay una operacion previa
             //capturar el numero de la pantalla
-            this.ultimoNumero = document.getElementById('display').innerHTML
+            this.ultimoNumero = this.capturarNumeroPantalla()
             var resultado = this.operacionBinaria(this.primerNumero,
                                                   this.ultimoNumero,
                                                   this.ultimoSigno)
@@ -213,7 +223,12 @@ var calculadora={
         this.signoFlag = false
         this.inicioFlag = true
         return '0'
+    },
+
+    capturarNumeroPantalla(){
+        return document.getElementById('display').innerHTML
     }
+
 }
 
 calculadora.inicializar();
