@@ -31,7 +31,7 @@ var calculadora={
 
     procesarTecla: function(id) {
         var pantalla = "" 
-        // procesar la tecla segun esu valor
+        // procesar la tecla segun su valor
         switch (id) {
             case 'sign':
                 pantalla = this.agregarSigno()
