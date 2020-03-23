@@ -113,7 +113,7 @@ var calculadora={
         }
         else{
             if(!a.includes('.'))
-                if(a == '0' || a=="")
+                if(a == '0' || a == "")
                     a = '0.'
                 else
                     a = a + '.'
@@ -125,7 +125,7 @@ var calculadora={
     agregarSigno: function() {
         var a = this.capturarNumeroPantalla()
         // devuelve un signo positivo o negativo de la pantalla
-        if(a !='0' || a != '')
+        if(a !='0' && a != "")
             if (String(a).includes('-'))
                 a = a.replace('-','')
             else
